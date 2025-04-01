@@ -1,6 +1,22 @@
 import { useState } from "react";
+import { useEffect } from "react";
 
 export default function SecretWord({ onFilter, onDisplay }) {
+  //Onclick fetcha ord utifrån parametrar ´querystring
+
+  //KÖrs efter komponenter renders
+  //Array med värden, om värden ändras endast då körs funktionen
+  //När array tom körs funktionen bara första gången när kompoinentent renderas
+
+  useEffect(() => {
+    async function loadWords() {
+      const response = await fetch("/api/secretword");
+      const payload = await response.json();
+      console.log("payload", payload);
+    }
+    loadWords();
+  }, []);
+
   const [number, setNumber] = useState(4);
 
   function handleNumber(event) {
