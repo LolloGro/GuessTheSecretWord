@@ -16,9 +16,14 @@ export async function loadWord(number, repeat) {
     }
   });
 
+  if (sortedList.length == 0) {
+    //Hantera
+    return [];
+  }
+
   const remove = [];
 
-  if (repeat === false) {
+  if (repeat === "noRep") {
     for (let i = 0; i < sortedList.length; i++) {
       let check = sortedList[i];
 
@@ -28,25 +33,20 @@ export async function loadWord(number, repeat) {
         remove.push(check);
       }
     }
-  }
-
-  if (sortedList.length == 0) {
-    return [];
-  }
-
-  if (remove.length > 0) {
-    const newLista = sortedList.filter((word) => !remove.includes(word));
-
-    if (newLista == 0) {
-      return false;
-    } else {
-      const randomWord = newLista[Math.floor(Math.random() * newLista.length)];
-      return randomWord;
-    }
   } else {
     const randomWordNoRep =
       sortedList[Math.floor(Math.random() * sortedList.length)];
 
     return randomWordNoRep;
+  }
+
+  const newLista = sortedList.filter((word) => !remove.includes(word));
+
+  if (newLista.length == 0) {
+    return [];
+    //Hantera
+  } else {
+    const randomWord = newLista[Math.floor(Math.random() * newLista.length)];
+    return randomWord;
   }
 }
