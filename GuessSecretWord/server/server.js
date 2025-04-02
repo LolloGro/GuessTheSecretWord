@@ -1,4 +1,5 @@
 import express from "express";
+import { loadWord } from "./loadWord.js";
 
 const app = express();
 
@@ -8,25 +9,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/secretword", (req, res) => {
-  res.json({
-    word: [
-      "alla",
-      "stol",
-      "bok",
-      "skrivbord",
-      "aj",
-      "kanske",
-      "lite",
-      "mycket",
-      "ajabaja",
-    ],
-  });
+app.get("/api/secretword/:num/:rep", async (req, res) => {
+  const number = req.params.num;
+  const repeat = req.params.rep;
+  const word = await loadWord(number, repeat);
+  res.send(word);
 });
 
-const highscore = [];
+//const highscore = [];
 
-app.post("/api/results", (res, res) => {
+/* app.post("/api/results", (res, res) => {
   const newResult = {
     name: req.body.name,
     time: req.body.time,
@@ -37,8 +29,14 @@ app.post("/api/results", (res, res) => {
   highscore.push(newResult);
 
   res.statusCode(201).json({ data: newResult });
+}); */
+
+//konverterar JSON till body with post
+//app.use(express.json());
+
+//express inbyggda hantering av statiska filer
+app.use("/static", express.static("static"));
+
+app.listen(5080, () => {
+  console.log("server started on 5080");
 });
-
-app.use(express.json());
-
-app.listen(5080);
