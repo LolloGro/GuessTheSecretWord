@@ -1,21 +1,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function SecretWord({ onFilter, onDisplay }) {
-  //Onclick fetcha ord utifrån parametrar ´querystring
-
-  //KÖrs efter komponenter renders
-  //Array med värden, om värden ändras endast då körs funktionen
-  //När array tom körs funktionen bara första gången när kompoinentent renderas
-
-  useEffect(() => {
-    async function loadWords() {
-      const response = await fetch("/api/secretword");
-      const payload = await response.json();
-      console.log("payload", payload);
-    }
-    loadWords();
-  }, []);
+export default function SecretWord() {
+  //{ onFilter, onDisplay;}
 
   const [number, setNumber] = useState(4);
 
@@ -23,85 +10,52 @@ export default function SecretWord({ onFilter, onDisplay }) {
     setNumber(event.target.value);
   }
 
-  const [repeat, setRep] = useState(true);
+  const [repeat, setRep] = useState("rep");
 
   function handleRep(event) {
     setRep(event.target.value);
   }
 
-  const [error, setError] = useState("");
-  function handleError(err) {
-    setError(err);
+  const [search, setSearch] = useState({});
+  function handleSearch(param) {
+    setSearch(param);
   }
 
+  console.log("search", search);
+
+  const [backend, setBackend] = useState([]);
+
+  useEffect(() => {
+    async function loadSecret(number, repeat) {
+      const res = await fetch(`/api/secretword/${number}/${repeat}`);
+      if (res.ok) {
+        const word = await res.text();
+        setBackend(word);
+      } else {
+        console.error("Error", res.status);
+      }
+    }
+    const num = search.num;
+    const rep = search.rep;
+    loadSecret(num, rep);
+  }, [search]);
+
+  console.log("backend", backend);
+  /*   const [error, setError] = useState("");
+  function handleError(err) {
+    setError(err);
+  } */
+
   //Ska kunna öppnas åter om besökaren vill börja om från början med ett nytt ord
-  const [display, setDisplay] = useState(true);
+  /*   const [display, setDisplay] = useState(true);
   function handleDisplay() {
     setDisplay(!display);
   }
-  console.log("display", display);
 
-  //Ord ska hämtas via API Anrop
-  const wordList = [
-    "alla",
-    "stol",
-    "bok",
-    "skrivbord",
-    "aj",
-    "kanske",
-    "lite",
-    "mycket",
-    "ajabaja",
-  ];
 
-  function sortWords(wordList, number, repeat) {
-    const sortedList = wordList.filter((word) => {
-      if (word.length == number) {
-        return word;
-      }
-    });
-
-    const remove = [];
-
-    if (repeat === false) {
-      for (let i = 0; i < sortedList.length; i++) {
-        let check = sortedList[i];
-
-        let checkedWord = /(\w).*\1/.test(check);
-
-        if (checkedWord == true) {
-          remove.push(check);
-        }
-      }
-    }
-
-    if (sortedList.length == 0) {
-      handleError("No word that matches");
-      return;
-    }
-
-    if (remove.length > 0) {
-      const newLista = sortedList.filter((word) => !remove.includes(word));
-
-      if (newLista == 0) {
-        return false;
-      } else {
-        const randomWord =
-          newLista[Math.floor(Math.random() * newLista.length)];
         handleDisplay();
         onDisplay(true);
-        onFilter(randomWord);
-        return;
-      }
-    } else {
-      const randomWordNoRep =
-        sortedList[Math.floor(Math.random() * sortedList.length)];
-      handleDisplay();
-      onDisplay(true);
-      onFilter(randomWordNoRep);
-      return;
-    }
-  }
+        onFilter(randomWord); */
 
   return (
     <>
@@ -125,15 +79,14 @@ export default function SecretWord({ onFilter, onDisplay }) {
             onChange={handleRep}
             className="w-16 border-solid border-black border rounded-md font-bold p-1.5"
           >
-            <option value={true}>Yes</option>
-            <option value={false}>No</option>
+            <option value={"rep"}>Yes</option>
+            <option value={"noRep"}>No</option>
           </select>
-          <p>{error}</p>
+          <p>"error"</p>
           <button
             className="col-span-2 border rounded-md mt-4 bg-blue-600 text-white p-2"
             onClick={() => {
-              handleError("");
-              sortWords(wordList, number, repeat);
+              handleSearch({ num: number, rep: repeat });
             }}
           >
             Choose secret word
