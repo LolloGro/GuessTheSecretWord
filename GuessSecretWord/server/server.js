@@ -1,7 +1,12 @@
 import express from "express";
+import { engine } from "express-handlebars";
 import { loadWord } from "./loadWord.js";
 
 const app = express();
+
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", "./views");
 
 //middleware
 app.use((req, res, next) => {
@@ -9,10 +14,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.render("infoPage");
+});
+
 app.get("/api/secretword/:num/:rep", async (req, res) => {
   const number = req.params.num;
   const repeat = req.params.rep;
   const word = await loadWord(number, repeat);
+  console.log("word", word);
   res.send(word);
 });
 
