@@ -4,10 +4,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Guess the word</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="/file/main.css"
+    />
   </head>
   <body>
+    <nav id="navigation" class="bg-neutral-800 text-white p-6 font-bold flex">
+      <img src="/static/CloudNav.webp" alt="" />
+      <div class="m-auto">
+        <ul class="flex justify-evenly">
+          <li class="mr-10">
+            <a href="/">Home</a>
+          </li>
+          <li class="mr-10">
+            <a href="/info">Gameinfo</a>
+          </li>
+          <li>
+            <a href="/highscore">Highscore</a>
+          </li>
+        </ul>
+      </div>
+      <button>
+        <img src="/static/menu-burger.png" alt="menu" />
+      </button>
+    </nav>
     <div>{{{body}}}</div>
+    <script type="module" src="/file/main.js"></script>
   </body>
 </html>

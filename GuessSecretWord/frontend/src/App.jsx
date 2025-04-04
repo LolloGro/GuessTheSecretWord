@@ -17,7 +17,6 @@ function App() {
 
   return (
     <>
-      <Navigation />
       <HomePage />
       <SecretWord onFilter={handleSecret} onDisplay={handleDisplay} />
       <GuessSecretWord secret={secret} display={display} />
