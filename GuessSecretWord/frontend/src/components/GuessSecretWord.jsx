@@ -1,36 +1,65 @@
 import { useState } from "react";
+
 import RegHighscore from "./RegHighscore";
 
-function GuessSecretWord({ secret, display }) {
+function GuessSecretWord({ num }) {
   //En tidtagning ska starta när besökaren börjar att gissa och stoppas när denna gissat rätt
   //Skicka vidare antal gissningar och tid om besökaren vill registrera sitt resultat när gissat rätt
-  //Öppna en div när besökaren gissar rätt som frågar om besökaren vill registrera sitt reaultat
-  //secret to lowercase
 
-  console.log("ska det öppnas", display);
-  console.log("Secret", secret);
-
+  //Här angess gissningen
   const [newGuess, setGuess] = useState("");
 
   function handleGuess(event) {
     setGuess(event.target.value);
   }
 
+  //Här raknas antalet gissningar
   const [count, setCount] = useState(0);
   console.log("klick", count);
   function handleCount() {
     setCount(count + 1);
   }
 
-  const [result, setResult] = useState([]);
-  function handleResult(checkSecret) {
-    setResult(checkSecret);
-  }
-
+  //Här sätts error om gissning ej fylller krav
   const [error, setError] = useState("");
   function handleError(err) {
     setError(err);
   }
+
+  //Kär kontrolleras om gissningar uppfyller krav och sätter gissning om OK
+  function CheckAnswer(wordGuessed, num) {
+    if (wordGuessed === "") {
+      handleError("Cant be empty");
+      return;
+    }
+    if (wordGuessed.length !== num) {
+      handleError("Wrong number of letters");
+      return;
+    }
+    setGuess("");
+    handleCount();
+    loadCheck(wordGuessed);
+    return;
+  }
+
+  //Här skickas gissningen in för kontroll och retunerar ett svar.
+
+  async function loadCheck(guess) {
+    const res = await fetch(`/api/${guess}`);
+    if (res.ok) {
+      const result = await res.json();
+      setResult(result);
+    } else {
+      console.error("Error", res.status);
+    }
+  }
+
+  //Här tas resultatet emot efter att gissningar har kontrollerats
+  const [result, setResult] = useState([]);
+
+  //Ska jag spara resultat så att spelaren kan följa sina gissningar
+
+  //GÖr om till en useEffect som körs när resulr ändras
 
   function getColor(secret) {
     if (secret == "Correct") {
@@ -40,50 +69,6 @@ function GuessSecretWord({ secret, display }) {
     } else {
       return "bg-yellow-300";
     }
-  }
-
-  function CheckAnswer(wordGuessed, answer) {
-    if (wordGuessed === "") {
-      handleError("Cant be empty");
-      return;
-    }
-    if (wordGuessed.length !== answer.length) {
-      handleError("Wrong number of letters");
-      return;
-    }
-
-    const guess = wordGuessed.toLowerCase();
-
-    if (answer === guess) {
-      handleError("RÄTT");
-      return;
-    }
-
-    const secret = answer.split("");
-    const guessedWord = guess.split("");
-
-    const checkSecret = [];
-
-    for (let i = 0; i < secret.length; i++) {
-      if (secret[i] == guessedWord[i]) {
-        checkSecret.push({ secret: "Correct", letter: guessedWord[i] });
-      } else if (secret.includes(guessedWord[i])) {
-        const kolla = guessedWord.filter((b) => b == guessedWord[i]);
-        const referens = secret.filter((a) => a == guessedWord[i]);
-
-        if (kolla.length <= referens.length) {
-          checkSecret.push({ secret: "Misplaced", letter: guessedWord[i] });
-        } else {
-          checkSecret.push({ secret: "Incorrect", letter: guessedWord[i] });
-        }
-      } else {
-        checkSecret.push({ secret: "Incorrect", letter: guessedWord[i] });
-      }
-    }
-
-    handleCount();
-    handleResult(checkSecret);
-    return;
   }
 
   return (
@@ -98,14 +83,12 @@ function GuessSecretWord({ secret, display }) {
             value={newGuess}
             onChange={handleGuess}
           />
-
           <p>{error}</p>
           <button
             className="col-span-2 border rounded-md mt-4 bg-blue-600 text-white pt-2 pb-2 pl-4 pr-4"
             onClick={() => {
-              setGuess("");
               setError("");
-              CheckAnswer(newGuess, secret);
+              CheckAnswer(newGuess, num);
             }}
           >
             Make you guess

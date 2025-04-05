@@ -17,7 +17,7 @@ export async function loadWord(number, repeat) {
   });
 
   if (sortedList.length == 0) {
-    //Hantera
+    //Hantera att visar error meddelande via ID
     return [];
   }
 
@@ -34,10 +34,11 @@ export async function loadWord(number, repeat) {
       }
     }
   } else {
-    const randomWordNoRep =
+    const randomWordRep =
       sortedList[Math.floor(Math.random() * sortedList.length)];
+    //secret to lowercase
 
-    return randomWordNoRep;
+    return randomWordRep;
   }
 
   const newLista = sortedList.filter((word) => !remove.includes(word));
@@ -47,6 +48,8 @@ export async function loadWord(number, repeat) {
     //Hantera
   } else {
     const randomWord = newLista[Math.floor(Math.random() * newLista.length)];
+    //secret to lowercase
+
     return randomWord;
   }
 }

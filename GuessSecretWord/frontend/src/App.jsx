@@ -1,13 +1,12 @@
 import { useState } from "react";
-import Navigation from "./components/Navigation";
 import HomePage from "./components/HomePage";
 import GuessSecretWord from "./components/GuessSecretWord";
 import SecretWord from "./components/SecretWord";
 
 function App() {
-  const [secret, setSecret] = useState("");
-  function handleSecret(word) {
-    setSecret(word);
+  const [num, setNum] = useState(0);
+  function handleNum(num) {
+    setNum(num);
   }
 
   const [display, setDisplay] = useState("hide");
@@ -18,8 +17,8 @@ function App() {
   return (
     <>
       <HomePage />
-      <SecretWord onFilter={handleSecret} onDisplay={handleDisplay} />
-      <GuessSecretWord secret={secret} display={display} />
+      <SecretWord onNum={handleNum} onDisplay={handleDisplay} />
+      <GuessSecretWord num={num} display={display} />
     </>
   );
 }

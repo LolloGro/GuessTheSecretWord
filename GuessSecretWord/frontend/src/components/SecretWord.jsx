@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { useEffect } from "react";
 
-export default function SecretWord() {
-  //{ onFilter, onDisplay;}
-
+export default function SecretWord({ onNum }) {
   const [number, setNumber] = useState(4);
 
   function handleNumber(event) {
@@ -16,46 +13,22 @@ export default function SecretWord() {
     setRep(event.target.value);
   }
 
-  const [search, setSearch] = useState({});
-  function handleSearch(param) {
-    setSearch(param);
+  const [display, setDisplay] = useState(false);
+
+  if (display == true) {
+    console.log("Med denna kan vi stänga modulen och öppna gissa order");
   }
 
-  console.log("search", search);
-
-  const [backend, setBackend] = useState([]);
-
-  useEffect(() => {
-    async function loadSecret(number, repeat) {
-      const res = await fetch(`/api/secretword/${number}/${repeat}`);
-      if (res.ok) {
-        const word = await res.text();
-        setBackend(word);
-      } else {
-        console.error("Error", res.status);
-      }
+  async function loadSecret(number, repeat) {
+    const res = await fetch(`/api/secretword/${number}/${repeat}`);
+    if (res.ok) {
+      const close = await res.json();
+      console.log(close);
+      setDisplay(close);
+    } else {
+      console.error("Error", res.status);
     }
-    const num = search.num;
-    const rep = search.rep;
-    loadSecret(num, rep);
-  }, [search]);
-
-  console.log("backend", backend);
-  /*   const [error, setError] = useState("");
-  function handleError(err) {
-    setError(err);
-  } */
-
-  //Ska kunna öppnas åter om besökaren vill börja om från början med ett nytt ord
-  /*   const [display, setDisplay] = useState(true);
-  function handleDisplay() {
-    setDisplay(!display);
   }
-
-
-        handleDisplay();
-        onDisplay(true);
-        onFilter(randomWord); */
 
   return (
     <>
@@ -82,11 +55,12 @@ export default function SecretWord() {
             <option value={"rep"}>Yes</option>
             <option value={"noRep"}>No</option>
           </select>
-          <p>"error"</p>
+          <p>"error messages"</p>
           <button
             className="col-span-2 border rounded-md mt-4 bg-blue-600 text-white p-2"
             onClick={() => {
-              handleSearch({ num: number, rep: repeat });
+              onNum(number);
+              loadSecret(number, repeat);
             }}
           >
             Choose secret word
