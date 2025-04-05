@@ -3,9 +3,9 @@ function HomePage() {
     <>
       <div className="flex flex-col items-center">
         <img
-          src="/GuessWord1000.png"
+          src="/static/QuestionFront.webp"
           alt="Guess the word"
-          className="border-[0.5rem] border-solid border-black rounded-md"
+          className="max-w-[1000px] border-[0.5rem] border-solid border-black rounded-md"
         />
         <h1 className="text-4xl font-bold p-2">Guess The Word</h1>
         <p className="text-xl max-w-[600px]">
