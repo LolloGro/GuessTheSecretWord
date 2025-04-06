@@ -2,11 +2,12 @@ import { useState } from "react";
 
 import RegHighscore from "./RegHighscore";
 
-function GuessSecretWord({ num }) {
+function GuessSecretWord({ num, rep, display }) {
   //En tidtagning ska starta när besökaren börjar att gissa och stoppas när denna gissat rätt
   //Skicka vidare antal gissningar och tid om besökaren vill registrera sitt resultat när gissat rätt
-
   //Här angess gissningen
+
+  console.log("Guess Secret word", display);
   const [newGuess, setGuess] = useState("");
 
   function handleGuess(event) {
@@ -111,7 +112,7 @@ function GuessSecretWord({ num }) {
           </ul>
         </div>
       </div>
-      <RegHighscore count={count} />
+      <RegHighscore num={num} rep={rep} count={count} />
     </>
   );
 }

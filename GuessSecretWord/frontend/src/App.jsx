@@ -14,11 +14,22 @@ function App() {
     setDisplay(show);
   }
 
+  const [rep, setRep] = useState("");
+  function handleRep(repeat) {
+    setRep(repeat);
+  }
+
+  console.log("vi kontrollerar om vi tar emot ett värde för red", rep);
+
   return (
     <>
       <HomePage />
-      <SecretWord onNum={handleNum} onDisplay={handleDisplay} />
-      <GuessSecretWord num={num} display={display} />
+      <SecretWord
+        onNum={handleNum}
+        onRep={handleRep}
+        onDisplay={handleDisplay}
+      />
+      <GuessSecretWord num={num} rep={rep} display={display} />
     </>
   );
 }

@@ -1,5 +1,5 @@
-export default function RegHighscore({ count }) {
-  //Om spelaren vill registrera sitt resultat slka följande skickas med
+export default function RegHighscore({ num, rep, count }) {
+  //Om spelaren vill registrera sitt resultat ska följande skickas med
   //Nanmn
   //Antal gissningar
   //Tid
@@ -14,6 +14,8 @@ export default function RegHighscore({ count }) {
           <p>You solved the quest</p>
           <p>Guesses made: {count}</p>
           <p>Your time:</p>
+          <p>Can the same letter occur only once: {rep}</p>
+          <p>How many numbers do the word consist of: {num}</p>
           <p>Du you want to register you result?</p>
           <label htmlFor="namn">Name:</label>
           <input type="text" name="namn" id="namn" />
@@ -34,7 +36,7 @@ export default function RegHighscore({ count }) {
           </div>
         </div>
         <div className="bg-neutral-800">
-          <img src="/pokal.png" alt="pokal" />
+          <img src="/static/Cup.webp" alt="pokal" />
         </div>
       </form>
     </>

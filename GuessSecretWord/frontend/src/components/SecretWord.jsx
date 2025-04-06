@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function SecretWord({ onNum }) {
+export default function SecretWord({ onNum, onRep, onDisplay }) {
   const [number, setNumber] = useState(4);
 
   function handleNumber(event) {
@@ -12,11 +12,13 @@ export default function SecretWord({ onNum }) {
   function handleRep(event) {
     setRep(event.target.value);
   }
-
   const [display, setDisplay] = useState(false);
 
   if (display == true) {
-    console.log("Med denna kan vi stänga modulen och öppna gissa order");
+    console.log(
+      "Med denna kan vi stänga modulen och öppna gissa order",
+      display
+    );
   }
 
   async function loadSecret(number, repeat) {
@@ -24,6 +26,7 @@ export default function SecretWord({ onNum }) {
     if (res.ok) {
       const close = await res.json();
       console.log(close);
+      onDisplay(close);
       setDisplay(close);
     } else {
       console.error("Error", res.status);
@@ -60,6 +63,7 @@ export default function SecretWord({ onNum }) {
             className="col-span-2 border rounded-md mt-4 bg-blue-600 text-white p-2"
             onClick={() => {
               onNum(number);
+              onRep(repeat);
               loadSecret(number, repeat);
             }}
           >
