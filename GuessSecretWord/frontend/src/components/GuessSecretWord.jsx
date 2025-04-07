@@ -1,74 +1,57 @@
 import { useState } from "react";
 
-import RegHighscore from "./RegHighscore";
+function GuessSecretWord({ num, display }) {
+  console.log("GuessSecretword - display", display);
 
-function GuessSecretWord({ num, rep, display }) {
-  //En tidtagning ska starta när besökaren börjar att gissa och stoppas när denna gissat rätt
-  //Skicka vidare antal gissningar och tid om besökaren vill registrera sitt resultat när gissat rätt
-  //Här angess gissningen
-
-  console.log("Guess Secret word", display);
   const [newGuess, setGuess] = useState("");
-
   function handleGuess(event) {
     setGuess(event.target.value);
   }
 
-  //Här raknas antalet gissningar
-  const [count, setCount] = useState(0);
-  console.log("klick", count);
-  function handleCount() {
-    setCount(count + 1);
-  }
-
-  //Här sätts error om gissning ej fylller krav
   const [error, setError] = useState("");
   function handleError(err) {
     setError(err);
   }
 
-  //Kär kontrolleras om gissningar uppfyller krav och sätter gissning om OK
-  function CheckAnswer(wordGuessed, num) {
+  function CheckAnswer(wordGuessed, num, count) {
     if (wordGuessed === "") {
       handleError("Cant be empty");
       return;
     }
-    if (wordGuessed.length !== num) {
+    if (wordGuessed.length != num) {
       handleError("Wrong number of letters");
       return;
     }
     setGuess("");
-    handleCount();
-    loadCheck(wordGuessed);
+    loadCheck(wordGuessed, count);
     return;
   }
 
-  //Här skickas gissningen in för kontroll och retunerar ett svar.
+  const [result, setResult] = useState([]);
+
+  const [allResult, setAllResult] = useState([]);
+  function handleAllResult(result) {
+    setAllResult([...allResult, result]);
+  }
 
   async function loadCheck(guess) {
-    const res = await fetch(`/api/${guess}`);
+    const res = await fetch(`/game/guess/${guess}`);
     if (res.ok) {
       const result = await res.json();
+
       setResult(result);
     } else {
       console.error("Error", res.status);
     }
   }
 
-  //Här tas resultatet emot efter att gissningar har kontrollerats
-  const [result, setResult] = useState([]);
-
-  //Ska jag spara resultat så att spelaren kan följa sina gissningar
-
-  //GÖr om till en useEffect som körs när resulr ändras
-
   function getColor(secret) {
     if (secret == "Correct") {
-      return "bg-lime-500";
+      return "bg-[#579C05]";
     } else if (secret == "Incorrect") {
-      return "bg-red-500";
+      return "bg-[#FE2D28]";
     } else {
-      return "bg-yellow-300";
+      return "bg-[#FAB206]";
     }
   }
 
@@ -86,33 +69,53 @@ function GuessSecretWord({ num, rep, display }) {
           />
           <p>{error}</p>
           <button
-            className="col-span-2 border rounded-md mt-4 bg-blue-600 text-white pt-2 pb-2 pl-4 pr-4"
+            className="col-span-2 border rounded-md mt-4 bg-button-blue text-white pt-2 pb-2 pl-4 pr-4"
             onClick={() => {
               setError("");
+              handleAllResult(result);
               CheckAnswer(newGuess, num);
             }}
           >
             Make you guess
           </button>
-          <p>Time:</p>
-          <p>Guesses made: {count}</p>
         </div>
         <div className="text-center">
-          <p className="font-bold text-xl"> Reslut:</p>
-          <ul>
+          <ul className="flex flex-row justify-center">
             {result.map((word, index) => {
               return (
-                <li key={index} className={`text-xl ${getColor(word.secret)}`}>
+                <li
+                  key={index}
+                  className={`content-center h-16 w-16 m-1 border-black border-[0.5rem] rounded-md text-2xl font-bold ${getColor(
+                    word.secret
+                  )}`}
+                >
                   {word.letter}
-                  {" - "}
-                  {word.secret}
                 </li>
               );
             })}
           </ul>
         </div>
+        <div className="text-center">
+          {allResult.map((guess, index) => {
+            return (
+              <ul key={index} className="flex flex-row justify-center">
+                {guess.map((word, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className={`content-center h-16 w-16 m-1 border-black border-[0.5rem] rounded-md text-2xl font-bold ${getColor(
+                        word.secret
+                      )}`}
+                    >
+                      {word.letter}
+                    </li>
+                  );
+                })}
+              </ul>
+            );
+          })}
+        </div>
       </div>
-      <RegHighscore num={num} rep={rep} count={count} />
     </>
   );
 }

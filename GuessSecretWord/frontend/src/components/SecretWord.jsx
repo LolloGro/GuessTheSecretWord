@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function SecretWord({ onNum, onRep, onDisplay }) {
+export default function SecretWord({ onNum, onDisplay }) {
   const [number, setNumber] = useState(4);
 
   function handleNumber(event) {
@@ -12,6 +12,7 @@ export default function SecretWord({ onNum, onRep, onDisplay }) {
   function handleRep(event) {
     setRep(event.target.value);
   }
+
   const [display, setDisplay] = useState(false);
 
   if (display == true) {
@@ -22,10 +23,10 @@ export default function SecretWord({ onNum, onRep, onDisplay }) {
   }
 
   async function loadSecret(number, repeat) {
-    const res = await fetch(`/api/secretword/${number}/${repeat}`);
+    const res = await fetch(`/game/secretword/${number}/${repeat}`);
     if (res.ok) {
       const close = await res.json();
-      console.log(close);
+      console.log("Secretword value to change display", close);
       onDisplay(close);
       setDisplay(close);
     } else {
@@ -58,12 +59,10 @@ export default function SecretWord({ onNum, onRep, onDisplay }) {
             <option value={"rep"}>Yes</option>
             <option value={"noRep"}>No</option>
           </select>
-          <p>"error messages"</p>
           <button
-            className="col-span-2 border rounded-md mt-4 bg-blue-600 text-white p-2"
+            className="col-span-2 border rounded-md mt-4 bg-button-blue text-white pt-2 pb-2 pl-4 pr-4"
             onClick={() => {
               onNum(number);
-              onRep(repeat);
               loadSecret(number, repeat);
             }}
           >

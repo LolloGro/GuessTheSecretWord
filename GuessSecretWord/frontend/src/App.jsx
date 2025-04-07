@@ -2,6 +2,7 @@ import { useState } from "react";
 import HomePage from "./components/HomePage";
 import GuessSecretWord from "./components/GuessSecretWord";
 import SecretWord from "./components/SecretWord";
+import RegHighscore from "./components/RegHighscore";
 
 function App() {
   const [num, setNum] = useState(0);
@@ -14,22 +15,12 @@ function App() {
     setDisplay(show);
   }
 
-  const [rep, setRep] = useState("");
-  function handleRep(repeat) {
-    setRep(repeat);
-  }
-
-  console.log("vi kontrollerar om vi tar emot ett värde för red", rep);
-
   return (
     <>
       <HomePage />
-      <SecretWord
-        onNum={handleNum}
-        onRep={handleRep}
-        onDisplay={handleDisplay}
-      />
-      <GuessSecretWord num={num} rep={rep} display={display} />
+      <SecretWord onNum={handleNum} onDisplay={handleDisplay} />
+      <GuessSecretWord num={num} display={display} />
+      <RegHighscore />
     </>
   );
 }
