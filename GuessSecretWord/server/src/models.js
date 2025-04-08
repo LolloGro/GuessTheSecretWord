@@ -5,7 +5,7 @@ const resultSchema = new mongoose.Schema({
   time: Number,
   count: Number,
   letter: Number,
-  reapeat: String,
+  repeat: String,
 });
 
 const Result = mongoose.model("Result", resultSchema);
