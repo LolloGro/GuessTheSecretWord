@@ -17,13 +17,12 @@ export async function loadWord(number, repeat) {
   });
 
   if (sortedList.length == 0) {
-    //Hantera att visar error meddelande via ID
     return [];
   }
 
   const remove = [];
 
-  if (repeat === "noRep") {
+  if (repeat === "no") {
     for (let i = 0; i < sortedList.length; i++) {
       let check = sortedList[i];
 
@@ -45,7 +44,6 @@ export async function loadWord(number, repeat) {
 
   if (newLista.length == 0) {
     return [];
-    //Hantera
   } else {
     const randomWord = newLista[Math.floor(Math.random() * newLista.length)];
     //secret to lowercase
