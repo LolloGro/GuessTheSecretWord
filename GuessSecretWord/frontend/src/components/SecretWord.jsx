@@ -1,15 +1,13 @@
 import { useState } from "react";
 import Button from "./button";
 
-function SecretWord({ onNum, onDisplay }) {
+function SecretWord({ onNum, onDisplay, onID }) {
   const [number, setNumber] = useState(4);
-
   function handleNumber(event) {
     setNumber(event.target.value);
   }
 
   const [repeat, setRep] = useState("yes");
-
   function handleRep(event) {
     setRep(event.target.value);
   }
@@ -25,14 +23,17 @@ function SecretWord({ onNum, onDisplay }) {
   }
 
   async function loadSecret(number, repeat) {
-    const res = await fetch(`/game/secretword/${number}/${repeat}`);
+    const res = await fetch(`/game/secretword/${number}/${repeat}`, {
+      method: "post",
+    });
     if (res.ok) {
-      const close = await res.json();
-      if (close == "error") {
+      const result = await res.json();
+      if (result == "error") {
         handleError("No words exist, change you search");
       } else {
         handleError("");
-        handleDisplay(close);
+        handleDisplay(result.display);
+        onID(result.ID);
         onDisplay(true);
       }
     } else {
@@ -54,7 +55,6 @@ function SecretWord({ onNum, onDisplay }) {
               onChange={handleNumber}
               min={0}
             />
-
             <p className="text-xl p-2">
               Can the same letter occur more than once?
             </p>
