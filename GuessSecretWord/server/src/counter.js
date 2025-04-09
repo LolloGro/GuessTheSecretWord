@@ -3,9 +3,10 @@ let count = 0;
 export default function counter(run) {
   if (run === "start") {
     count++;
-    console.log("räknare", count);
     return count;
-  } else {
+  }
+  if (run === "stop") {
+    count = 0;
     return count;
   }
 }
