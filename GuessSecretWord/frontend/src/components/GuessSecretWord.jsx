@@ -161,7 +161,7 @@ function GuessSecretWord({ num, display, id }) {
             </ul>
           </div>
 
-          <RegHighscore open={open} time={time} count={count} />
+          <RegHighscore open={open} time={time} count={count} id={id} />
 
           {!open && (
             <div className="text-center">

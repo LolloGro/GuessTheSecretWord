@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "./button";
 
-function RegHighscore({ open, time, count }) {
+function RegHighscore({ open, time, count, id }) {
   const [name, setName] = useState("");
   function handleName(event) {
     setName(event.target.value);
@@ -17,7 +17,7 @@ function RegHighscore({ open, time, count }) {
       handleError("You must enter your name");
       return;
     } else {
-      const res = await fetch("/game/highscore", {
+      const res = await fetch(`/game/highscore/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
