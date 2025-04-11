@@ -1,6 +1,12 @@
 export default function checkGuess(guess, answer) {
+  let correct;
+  let stopTime;
+
   if (answer === guess) {
-    return "correct";
+    stopTime = Date.now();
+    correct = true;
+  } else {
+    correct = false;
   }
 
   const secret = answer.split("");
@@ -26,5 +32,7 @@ export default function checkGuess(guess, answer) {
 
   //Bugg: om skriver en gissning med två lika bokstäver, men det bara finns sådan i det hemliga ordet. Anges att bägge bokstäver är incorrect
 
-  return checkSecret;
+  const feedback = { checkSecret, correct, stopTime };
+
+  return feedback;
 }
