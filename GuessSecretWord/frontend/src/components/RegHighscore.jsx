@@ -57,7 +57,7 @@ function RegHighscore({ open, time, count, id }) {
               onChange={handleName}
               required
             />
-            <div>
+            <div className="flex">
               <Button
                 type={"submit"}
                 text={"Register"}
@@ -65,12 +65,9 @@ function RegHighscore({ open, time, count, id }) {
                   sendResult(name);
                 }}
               ></Button>
-              <a
-                className="col-span-2 border rounded-md mt-4 bg-button-blue text-white font-bold pt-3 pb-3 pl-4 pr-4 hover:bg-sky-700"
-                href="/"
-              >
-                Restart
-              </a>
+              <div className="min-w-36 border rounded-md mt-4 bg-button-blue  text-white font-bold pt-3 pb-3 pl-4 pr-4 hover:bg-sky-700 text-center">
+                <a href="/">Restart</a>
+              </div>
             </div>
           </div>
         </form>
