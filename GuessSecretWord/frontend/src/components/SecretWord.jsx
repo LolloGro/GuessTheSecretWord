@@ -2,7 +2,7 @@ import { useState } from "react";
 import Button from "./button";
 
 function SecretWord({ onNum, onDisplay, onID }) {
-  const [number, setNumber] = useState(4);
+  const [number, setNumber] = useState(5);
   function handleNumber(event) {
     setNumber(event.target.value);
   }
