@@ -1,0 +1,70 @@
+<div class="text-center">
+  <h1 class="text-3xl font-bold">Highscore</h1>
+  <p>Check out the result on the highscore board</p>
+  <img
+    class="m-auto mt-6 border-black border-[0.5rem] rounded-lg"
+    src="/static/HighScoreCup.webp"
+    alt="Cup"
+  />
+</div>
+
+<div class="text-center">
+  <Button
+    class="min-w-36 border rounded-md mt-4 bg-button-blue text-white font-bold pt-3 pb-3 pl-4 pr-4 hover:bg-sky-700"
+    id="button"
+    type="submit"
+  >Filter board</Button>
+</div>
+
+<form id="sort" style="display: none;">
+  <div
+    class="m-auto mt-6 max-w-[640px] border-black border-[0.5rem] rounded-lg flex flex-col items-center"
+  >
+    <p class="text-xl">Filter highscore board</p>
+    <label class="mb-2">Sort on length of word or</label>
+    <input
+      class="w-16 border-solid border-black border rounded-md font-bold p-1 text-center"
+      id="num"
+      type="number"
+      value="0"
+      min="0"
+    />
+
+    <p class="p-2">sort if letters can occur more than once</p>
+    <select
+      class="w-16 border-solid border-black border rounded-md font-bold p-1.5"
+      id="rep"
+    >
+      <option></option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <a class="underline p-2" href="/highscore">Show all highscores</a>
+
+  </div>
+</form>
+
+<div id="highscore" style="display: block;">
+  {{#each results}}
+    <div
+      class="m-auto mt-6 max-w-[640px] border-black border-[0.5rem] rounded-lg"
+    >
+      <ul class="p-1">
+        <li class="pl-2"><span class="font-bold">Name:</span> {{this.name}}</li>
+        <li><span class="font-bold">Time:</span> {{this.time}} s</li>
+        <li><span class="font-bold">Number of guesses:</span>
+          {{this.count}}</li>
+        <li><span class="font-bold">Number of letters:</span>
+          {{this.letter}}</li>
+        <li><span class="font-bold">Can the samt letter occur more than once:</span>
+          {{this.repeat}}</li>
+      </ul>
+    </div>
+  {{/each}}
+</div>
+
+<div id="filterd">
+</div>
+
+<script type="module" src="/static/filterHighscore.js"></script>

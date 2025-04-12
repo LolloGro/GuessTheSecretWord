@@ -4,6 +4,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Guess the word</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Guess the secret word" />
+    <meta name="keywords" content="Wordle game" />
+    <meta name="author" content="Louise" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -16,22 +19,23 @@
       <img src="/static/CloudNav.webp" alt="" />
       <div class="m-auto">
         <ul class="flex justify-evenly">
-          <li class="mr-10">
+          <li class="mr-10 hover:text-button-blue">
             <a href="/">Home</a>
           </li>
-          <li class="mr-10">
+          <li class="mr-10 hover:text-button-blue">
             <a href="/info">Gameinfo</a>
           </li>
-          <li>
+          <li class="hover:text-button-blue">
             <a href="/highscore">Highscore</a>
           </li>
         </ul>
       </div>
-      <button>
-        <img src="/static/menu-burger.png" alt="menu" />
-      </button>
     </nav>
     <div>{{{body}}}</div>
+    <footer class="bottom-0 bg-neutral-800 text-white p-6">
+      <p class="font-bold">Guess The Word</p>
+      <p>Can you guess the secret word? </p>
+    </footer>
     <script type="module" src="/file/main.js"></script>
   </body>
 </html>
