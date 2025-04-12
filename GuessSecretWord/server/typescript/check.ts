@@ -1,4 +1,4 @@
-export default function checkGuess(guess, answer) {
+export default function checkGuess(guess: string, answer: string) {
   let correct;
   let stopTime;
 
