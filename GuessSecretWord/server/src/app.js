@@ -17,7 +17,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_handlebars_1 = require("express-handlebars");
 const secretword_js_1 = require("./secretword.js");
-const check_js_1 = __importDefault(require("./check.js"));
+const checkGuess_js_1 = __importDefault(require("./checkGuess.js"));
 const time_js_1 = __importDefault(require("./time.js"));
 const count_js_1 = __importDefault(require("./count.js"));
 const model_js_1 = require("./model.js");
@@ -61,8 +61,8 @@ function loadPages() {
         }
         num = number;
         rep = repeat;
-        time = (0, time_js_1.default)("start");
-        count = (0, count_js_1.default)("stop");
+        time = Number((0, time_js_1.default)("start"));
+        count = Number((0, count_js_1.default)("stop"));
         wordGuessed = [];
         console.log("word", word);
     }));
@@ -71,10 +71,11 @@ function loadPages() {
         const playerID = req.params.id;
         if (playerID === ID) {
             wordGuessed.push(guess);
-            const result = (0, check_js_1.default)(guess, secret);
-            timeResult = (0, time_js_1.default)("stop");
-            stopTime = result.stopTime;
-            count = (0, count_js_1.default)("start");
+            const result = (0, checkGuess_js_1.default)(guess, secret, time);
+            stopTime = Number(result.stopTime);
+            timeResult = Number(result.totalTime);
+            console.log("timeResult", timeResult);
+            count = Number((0, count_js_1.default)("start"));
             res.status(201).json({ result: result, time: timeResult, count: count });
         }
         else {

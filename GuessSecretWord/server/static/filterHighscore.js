@@ -14,6 +14,7 @@ async function filterNum(event) {
     if (res.ok) {
       const filterd = await res.json();
       const display = document.getElementById("filterd");
+      display.replaceChildren();
       const scoreBoard = document.getElementById("highscore");
       scoreBoard.style.display = "none";
 
@@ -47,8 +48,6 @@ async function filterNum(event) {
   }
 }
 
-//Update
-
 const rep = document.getElementById("rep");
 rep.addEventListener("change", filterRep);
 
@@ -58,6 +57,7 @@ async function filterRep(event) {
     if (res.ok) {
       const filterd = await res.json();
       const display = document.getElementById("filterd");
+      display.replaceChildren();
       const scoreBoard = document.getElementById("highscore");
       scoreBoard.style.display = "none";
 

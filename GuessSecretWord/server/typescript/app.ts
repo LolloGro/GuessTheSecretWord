@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { engine } from "express-handlebars";
 import { loadWord } from "./secretword.js";
-import checkGuess from "./check.js";
+import checkGuess from "./checkGuess.js";
 import timer from "./time.js";
 import counter from "./count.js";
 import { Result } from "./model.js";
@@ -33,10 +33,10 @@ export default function loadPages() {
   let ID: string;
   let num: number;
   let rep: string;
-  let time: number | undefined;
-  let count: number | undefined;
-  let timeResult: number | undefined;
-  let stopTime: number | undefined;
+  let time: number;
+  let count: number;
+  let timeResult: number;
+  let stopTime: number;
   let wordGuessed: string[] = [];
 
   app.post("/game/secretword/:num/:rep", async (req, res) => {
@@ -52,8 +52,8 @@ export default function loadPages() {
     }
     num = number;
     rep = repeat;
-    time = timer("start");
-    count = counter("stop");
+    time = Number(timer("start"));
+    count = Number(counter("stop"));
     wordGuessed = [];
     console.log("word", word);
   });
@@ -64,10 +64,12 @@ export default function loadPages() {
 
     if (playerID === ID) {
       wordGuessed.push(guess);
-      const result = checkGuess(guess, secret);
-      timeResult = timer("stop");
-      stopTime = result.stopTime;
-      count = counter("start");
+      const result = checkGuess(guess, secret, time);
+
+      stopTime = Number(result.stopTime);
+      timeResult = Number(result.totalTime);
+      console.log("timeResult", timeResult);
+      count = Number(counter("start"));
       res.status(201).json({ result: result, time: timeResult, count: count });
     } else {
       res.status(404).end();

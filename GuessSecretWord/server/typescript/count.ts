@@ -1,4 +1,4 @@
-let count = 0;
+let count: number = 0;
 
 export default function counter(run: string) {
   if (run === "start") {

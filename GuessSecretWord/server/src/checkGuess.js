@@ -1,11 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = checkGuess;
-function checkGuess(guess, answer) {
+function checkGuess(guess, answer, time) {
     let correct;
-    let stopTime;
+    let stopTime = 0;
+    let totalTime = 0;
     if (answer === guess) {
         stopTime = Date.now();
+        const timeResult = stopTime - time;
+        totalTime = Math.round(timeResult / 1000);
         correct = true;
     }
     else {
@@ -33,6 +36,6 @@ function checkGuess(guess, answer) {
         }
     }
     //Bugg: om skriver en gissning med två lika bokstäver, men det bara finns sådan i det hemliga ordet. Anges att bägge bokstäver är incorrect
-    const feedback = { checkSecret, correct, stopTime };
+    const feedback = { checkSecret, correct, stopTime, totalTime };
     return feedback;
 }
