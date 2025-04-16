@@ -2,6 +2,10 @@
 export default {
   content: [
     "../server/views/layouts/main.handlebars",
+    "../server/views/infoPage.handlebars",
+    "../server/views/highscore.handlebars",
+    "../server/views/layouts/homePage.handlebars",
+
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -13,5 +17,3 @@ export default {
   },
   plugins: [],
 };
-
-//./index.html
