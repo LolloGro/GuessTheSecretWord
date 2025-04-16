@@ -15,6 +15,7 @@ async function filterNum(event) {
       const filterd = await res.json();
       const display = document.getElementById("filterd");
       display.replaceChildren();
+      rep.value = "";
       const scoreBoard = document.getElementById("highscore");
       scoreBoard.style.display = "none";
 
@@ -58,9 +59,10 @@ async function filterRep(event) {
       const filterd = await res.json();
       const display = document.getElementById("filterd");
       display.replaceChildren();
+
       const scoreBoard = document.getElementById("highscore");
       scoreBoard.style.display = "none";
-
+      num.value = 0;
       filterd.results.forEach((value) => {
         const displayDiv = document.createElement("div");
         displayDiv.className =
