@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_handlebars_1 = require("express-handlebars");
-const secretword_js_1 = require("./secretword.js");
-const checkGuess_js_1 = __importDefault(require("./checkGuess.js"));
-const time_js_1 = __importDefault(require("./time.js"));
-const count_js_1 = __importDefault(require("./count.js"));
-const model_js_1 = require("./model.js");
+const secretword_1 = require("./secretword");
+const checkGuess_1 = __importDefault(require("./checkGuess"));
+const time_1 = __importDefault(require("./time"));
+const count_1 = __importDefault(require("./count"));
+const model_1 = require("./model");
 const uuid_1 = require("uuid");
 const app = (0, express_1.default)();
 app.engine("handlebars", (0, express_handlebars_1.engine)());
@@ -49,7 +49,7 @@ app.post("/game/secretword/:num/:rep", (req, res) => __awaiter(void 0, void 0, v
     const number = Number(req.params.num);
     const repeat = req.params.rep;
     ID = (0, uuid_1.v4)();
-    const word = yield (0, secretword_js_1.loadWord)(number, repeat);
+    const word = yield (0, secretword_1.loadWord)(number, repeat);
     if (word != undefined) {
         secret = word.toLowerCase();
         res.json({ display: false, ID: ID });
@@ -59,8 +59,8 @@ app.post("/game/secretword/:num/:rep", (req, res) => __awaiter(void 0, void 0, v
     }
     num = number;
     rep = repeat;
-    time = Number((0, time_js_1.default)("start"));
-    count = Number((0, count_js_1.default)("stop"));
+    time = Number((0, time_1.default)("start"));
+    count = Number((0, count_1.default)("stop"));
     wordGuessed = [];
     console.log("word", word);
 }));
@@ -69,11 +69,11 @@ app.post("/game/guess/:guess/:id", (req, res) => {
     const playerID = req.params.id;
     if (playerID === ID) {
         wordGuessed.push(guess);
-        const result = (0, checkGuess_js_1.default)(guess, secret, time);
+        const result = (0, checkGuess_1.default)(guess, secret, time);
         stopTime = Number(result.stopTime);
         timeResult = Number(result.totalTime);
         console.log("timeResult", timeResult);
-        count = Number((0, count_js_1.default)("start"));
+        count = Number((0, count_1.default)("start"));
         res.status(201).json({ result: result, time: timeResult, count: count });
     }
     else {
@@ -84,7 +84,7 @@ app.post("/game/highscore/:playerID", (req, res) => __awaiter(void 0, void 0, vo
     yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
     const playerID = req.params.playerID;
     if (playerID === ID) {
-        const newResult = new model_js_1.Result({
+        const newResult = new model_1.Result({
             playerID: playerID,
             name: req.body.name,
             startTime: time,
@@ -104,7 +104,7 @@ app.post("/game/highscore/:playerID", (req, res) => __awaiter(void 0, void 0, vo
 }));
 app.get("/highscore", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
-    const result = yield model_js_1.Result.find();
+    const result = yield model_1.Result.find();
     res.render("highscore", {
         results: result.map((a) => {
             return {
@@ -120,7 +120,7 @@ app.get("/highscore", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 app.get("/game/highscore/number/:num", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
     const number = req.params.num;
-    const highscore = yield model_js_1.Result.find({ letter: number });
+    const highscore = yield model_1.Result.find({ letter: number });
     res.json({
         results: highscore.map((a) => {
             return {
@@ -136,7 +136,7 @@ app.get("/game/highscore/number/:num", (req, res) => __awaiter(void 0, void 0, v
 app.get("/game/highscore/repeat/:rep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
     const repeat = req.params.rep;
-    const score = yield model_js_1.Result.find({ repeat: repeat });
+    const score = yield model_1.Result.find({ repeat: repeat });
     res.json({
         results: score.map((b) => {
             return {

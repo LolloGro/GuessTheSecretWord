@@ -1,10 +1,14 @@
-import supertest from "supertest";
 import app from "../app";
-import { response } from "express";
+import request from "supertest";
 
-describe("res 200 when sends a guess", () => {
-  test("guess", async () => {
-    const res = await app.get("/info");
+describe("Test response", () => {
+  test("Should return status 200", async () => {
+    const response = await request(app).get("/info");
+    expect(response.status).toBe(200);
   });
-  expect(response.statusCode).toBe(200);
+
+  test("ID should be defined", async () => {
+    const response = await request(app).post("/game/secretword/5/yes");
+    expect(response.body.ID).toBeDefined();
+  });
 });
