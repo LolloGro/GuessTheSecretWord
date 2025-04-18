@@ -2,7 +2,6 @@ const button = document.getElementById("button");
 const sort = document.getElementById("sort");
 button.addEventListener("click", () => {
   sort.style.display = "block";
-  console.log("klickade");
 });
 
 const num = document.getElementById("num");
