@@ -1,12 +1,78 @@
-<div>
-  <h1>Gameinfo</h1>
-  <div>
-    <p>This game is built by Louise as a school assigment. </p>
-    <img src="/static/QuestionCloud.webp" alt="questionmark inside a cloud" />
+<div class="max-w-[640px] m-auto mb-10">
+  <div class="flex justify-center flex-col items-center">
+    <div class="text-center">
+      <h1 class="text-2xl font-bold p-2">Gameinfo</h1>
+      <p class="mb-5">Guess the Word är ett "Wordle" inspirerat spel skapat av
+        Louise, som en inlämningsuppggift i kursen JavaScript - Fullstack.
+      </p>
+    </div>
+    <div class="bg-stone-950 rounded-2xl flex justify-center items-center">
+      <img src="/static/QuestionCloud.webp" alt="questionmark inside a cloud" />
+    </div>
+    <h2 class="font-bold text-xl p-2">Spelets funktionalitet</h2>
+    <p>
+      Syftet med spelet är att besöken ska lista ut ett hemligt ord. Initialt
+      får besökaren om den vill, välja längd på ord att gissa samt om samma
+      bokstav får förekomma mer än en gång. Grundinställningen är att ordet
+      består av fem bokstäver och att samma bokstav för förekomma fler än en
+      gång. Spelet startar när spelaren klickar på "Choose secret word". Utifrån
+      angivna värden slumpas ett ord från en statisk fil innehållande ett
+      tusentals ord och en tidtagning startar.
+      <br />
+      Spelaren får sedan gissa vilket bokstäver hen tror att det hemliga ordet
+      innehåller. Efter varje gissning presenteras den aktuella gissningen.
+      Resultatet av gissningen visas genom att bokstäver med rätt plats markeras
+      med grönt, bokstäver på fel plats markeras med gult och fel bokstäver
+      markeras med rött. Tidigare gissningar kvarstår när ny gissning sker.
+      Varge gissning som spelaren gör räknas.
+      <br />
+      När spelaren gissar rätt ord visas det hemliga ordet samt tiden som
+      förlupit och antalet genomförda gissningar. Spelaren ges då möjlighet att
+      registrera sitt resultat eller spela en ny omgång.
+      <br />
+      Väljer spelaren att registrera sitt resultat får den ange sitt namn.
+      Spelaren kan även ta del av tidigare resultat genom att besök highscore
+      sidan. Där kan resultat sorteras beroende på ordets längd samt om en
+      bokstav får förekomma mer än en gång.
+    </p>
+    <h2 class="font-bold text-xl p-2">Spelets kostruktion</h2>
+    <h3 class="font-bold p-2">Frontend</h3>
+    <p>
+      I React har jag skapat komponenter för att hantera val av ord, inmatning
+      av gissningar och registrering av resultat. I komponenterna finns logik
+      för att hantera korrekta inmatningar samt att ta emot kontrollerad
+      gissning och presentera resultat.
+      <br />
+      I Handlebars har jag skapat grunden för webbplatsens alla webbsidor. Denna
+      sida samt Highscore sidan är server side renderade, vilket innebär att
+      servern ansvarar för ett rendera sidan och inte klienten.
+      <br />
+      Webbplatsens stylingen är uppbyggd med Tailwind, både i react och
+      handlebars, som sedan sammanfogas när bundlar projeketet med vite.
+    </p>
+    <h3 class="font-bold p-2">Backend</h3>
+    <p>
+      Backend är uppbyggd med Express och hanterar anrop till webbplatsens sidor
+      samt API. Varje begäran som spelaren gör innehåller den data som servern
+      behöver och det finns ett tydlig logik i namgivningen av API:
+      <br />
+      /game/secretword hanterar spelets hemliga ord, /game/guess hanterar
+      spelets gissningar och /game/highscore hanterar spelets highscore
+      resultat. Dessa API kombineras sedan med querystring för skicka med den
+      data som servern behöver.
+      <br />
+      På backend hanterar jag spellogiken för det hemliga ordet, spel-ID,
+      kontroll av gissningar, antal gissningar och tidtagning. Detta för att det
+      inte ska vara möjligt att kunna fuska.
+      <br />
+      Resultat på highscore listan sparas i en dokumentdatabas för att kunna
+      lagras beständigt. API anrop till highscore kan kombineras med data om
+      spelaren vill filtera listan. På så sätt kan servern skickan en förfrågan
+      till databasen för att enbart få tillbaka de resultat som matchar.
+      <br />
+      Spelets backend är programmet i Typescript vilket underlättar för att
+      kontrollera att man använder sina varibler på korrekt sätt samt att man
+      skickar in korrekt variabler i en funktion.
+    </p>
   </div>
-  <h2>React</h2>
-  <h2>Express</h2>
-  <h2>Handlebars</h2>
-  <h2>Moongose</h2>
-
 </div>
