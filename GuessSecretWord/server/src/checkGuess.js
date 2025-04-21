@@ -16,18 +16,32 @@ function checkGuess(guess, answer, time) {
     }
     const secret = answer.split("");
     const guessedWord = guess.split("");
-    const checkSecret = [];
-    for (let i = 0; i < secret.length; i++) {
-        if (secret[i] == guessedWord[i]) {
-            checkSecret.push({ secret: "Correct", letter: guessedWord[i] });
-        }
-        else if (secret.includes(guessedWord[i])) {
-            checkSecret.push({ secret: "Misplaced", letter: guessedWord[i] });
+    const checkIndex = [];
+    const result = guessedWord.map((letter, index) => {
+        if (letter === secret[index]) {
+            const i = secret.indexOf(letter);
+            checkIndex.push(i);
+            return { letter: letter, secret: "Correct" };
         }
         else {
-            checkSecret.push({ secret: "Incorrect", letter: guessedWord[i] });
+            return { letter: letter, secret: "Incorrect" };
         }
-    }
+    });
+    const checkSecret = result.map((res) => {
+        if (secret.includes(res.letter)) {
+            const j = secret.indexOf(res.letter);
+            if (checkIndex.includes(j)) {
+                return res;
+            }
+            else {
+                checkIndex.push(j);
+                return { letter: res.letter, secret: "Misplaced" };
+            }
+        }
+        else {
+            return res;
+        }
+    });
     const feedback = { checkSecret, correct, stopTime, totalTime };
     return feedback;
 }
