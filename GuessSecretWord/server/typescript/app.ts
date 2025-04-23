@@ -75,8 +75,12 @@ app.post("/game/guess/:guess/:id", (req, res) => {
   }
 });
 
+const URI = process.env.MONGO_URI;
+
 app.post("/game/highscore/:playerID", async (req, res) => {
-  await mongoose.connect("mongodb://localhost:27017/highscore");
+  await mongoose.connect(URI);
+  //"mongodb://localhost:27017/highscore"
+
   const playerID = req.params.playerID;
   if (playerID === ID) {
     const newResult = new Result({

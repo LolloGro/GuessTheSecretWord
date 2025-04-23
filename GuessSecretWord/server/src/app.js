@@ -80,8 +80,11 @@ app.post("/game/guess/:guess/:id", (req, res) => {
         res.status(404).end();
     }
 });
+const URI = process.env.MONGO_URI;
 app.post("/game/highscore/:playerID", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
+    yield mongoose_1.default.connect(URI);
+    //"mongodb://localhost:27017/highscore"
+    //process.env.MONGO_URI
     const playerID = req.params.playerID;
     if (playerID === ID) {
         const newResult = new model_1.Result({
