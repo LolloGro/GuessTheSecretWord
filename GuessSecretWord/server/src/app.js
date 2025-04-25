@@ -72,7 +72,6 @@ app.post("/game/guess/:guess/:id", (req, res) => {
         const result = (0, checkGuess_1.default)(guess, secret, time);
         stopTime = Number(result.stopTime);
         timeResult = Number(result.totalTime);
-        console.log("timeResult", timeResult);
         count = Number((0, count_1.default)("start"));
         res.status(201).json({ result: result, time: timeResult, count: count });
     }
@@ -81,10 +80,9 @@ app.post("/game/guess/:guess/:id", (req, res) => {
     }
 });
 const URI = process.env.MONGO_URI;
+//"mongodb://localhost:27017/highscore"
 app.post("/game/highscore/:playerID", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.connect(URI);
-    //"mongodb://localhost:27017/highscore"
-    //process.env.MONGO_URI
     const playerID = req.params.playerID;
     if (playerID === ID) {
         const newResult = new model_1.Result({
@@ -106,7 +104,7 @@ app.post("/game/highscore/:playerID", (req, res) => __awaiter(void 0, void 0, vo
     }
 }));
 app.get("/highscore", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
+    yield mongoose_1.default.connect(URI);
     const result = yield model_1.Result.find();
     res.render("highscore", {
         results: result.map((a) => {
@@ -121,7 +119,7 @@ app.get("/highscore", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 }));
 app.get("/game/highscore/number/:num", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
+    yield mongoose_1.default.connect(URI);
     const number = req.params.num;
     const highscore = yield model_1.Result.find({ letter: number });
     res.json({
@@ -137,7 +135,7 @@ app.get("/game/highscore/number/:num", (req, res) => __awaiter(void 0, void 0, v
     });
 }));
 app.get("/game/highscore/repeat/:rep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect("mongodb://localhost:27017/highscore");
+    yield mongoose_1.default.connect(URI);
     const repeat = req.params.rep;
     const score = yield model_1.Result.find({ repeat: repeat });
     res.json({

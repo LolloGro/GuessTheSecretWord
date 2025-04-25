@@ -67,7 +67,6 @@ app.post("/game/guess/:guess/:id", (req, res) => {
 
     stopTime = Number(result.stopTime);
     timeResult = Number(result.totalTime);
-    console.log("timeResult", timeResult);
     count = Number(counter("start"));
     res.status(201).json({ result: result, time: timeResult, count: count });
   } else {
@@ -76,11 +75,10 @@ app.post("/game/guess/:guess/:id", (req, res) => {
 });
 
 const URI = process.env.MONGO_URI;
+//"mongodb://localhost:27017/highscore"
 
 app.post("/game/highscore/:playerID", async (req, res) => {
   await mongoose.connect(URI);
-  //"mongodb://localhost:27017/highscore"
-
   const playerID = req.params.playerID;
   if (playerID === ID) {
     const newResult = new Result({
@@ -102,8 +100,9 @@ app.post("/game/highscore/:playerID", async (req, res) => {
 });
 
 app.get("/highscore", async (req, res) => {
-  await mongoose.connect("mongodb://localhost:27017/highscore");
+  await mongoose.connect(URI);
   const result = await Result.find();
+
   res.render("highscore", {
     results: result.map((a) => {
       return {
@@ -118,7 +117,7 @@ app.get("/highscore", async (req, res) => {
 });
 
 app.get("/game/highscore/number/:num", async (req, res) => {
-  await mongoose.connect("mongodb://localhost:27017/highscore");
+  await mongoose.connect(URI);
   const number = req.params.num;
   const highscore = await Result.find({ letter: number });
 
@@ -136,7 +135,7 @@ app.get("/game/highscore/number/:num", async (req, res) => {
 });
 
 app.get("/game/highscore/repeat/:rep", async (req, res) => {
-  await mongoose.connect("mongodb://localhost:27017/highscore");
+  await mongoose.connect(URI);
   const repeat = req.params.rep;
   const score = await Result.find({ repeat: repeat });
 
