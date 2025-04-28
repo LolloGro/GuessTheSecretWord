@@ -1,14 +1,40 @@
 import express from "express";
-import mongoose from "mongoose";
 import { engine } from "express-handlebars";
 import { loadWord } from "./secretword";
 import checkGuess from "./checkGuess";
 import timer from "./time";
 import counter from "./count";
-import { Result } from "./model";
 import { v4 as uuidv4 } from "uuid";
+import { Pool } from "pg";
 
 const app = express();
+
+const pool = new Pool({
+  user: "postgres",
+  password: "password",
+});
+
+async function CreateTable() {
+  try {
+    await pool.query(
+      `CREATE TABLE IF NOT EXISTS score(
+      id SERIAL PRIMARY KEY, 
+      playerID TEXT NOT NULL, 
+      name TEXT NOT NULL, 
+      startTime BIGINT NOT NULL, 
+      stopTime BIGINT NOT NULL, 
+      time INT NOT NULL, 
+      count INT NOT NULL, 
+      gusses TEXT[] NOT NULL, 
+      letter INT NOT NULL, 
+      repeat TEXT NOT NULL)`
+    );
+  } catch (err) {
+    console.log("No database");
+  }
+}
+
+CreateTable();
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
@@ -74,82 +100,94 @@ app.post("/game/guess/:guess/:id", (req, res) => {
   }
 });
 
-const URI = process.env.MONGO_URI;
-//"mongodb://localhost:27017/highscore"
-
 app.post("/game/highscore/:playerID", async (req, res) => {
-  await mongoose.connect(URI);
-  const playerID = req.params.playerID;
-  if (playerID === ID) {
-    const newResult = new Result({
-      playerID: playerID,
-      name: req.body.name,
-      startTime: time,
-      stopTime: stopTime,
-      time: timeResult,
-      count: count,
-      gusses: wordGuessed,
-      letter: num,
-      repeat: rep,
-    });
-    await newResult.save();
-    res.status(201);
-  } else {
-    res.status(404).end();
+  try {
+    const playerID = req.params.playerID;
+    if (playerID === ID) {
+      const sql = `INSERT INTO score(playerID, name, startTime, stopTime, time, count, gusses, letter, repeat) VALUES('${playerID}', $1::text,${time},${stopTime},${timeResult},${count},$2::text[],${num}, '${rep}')`;
+
+      const values = [req.body.name, wordGuessed];
+      const result = await pool.query(sql, values);
+
+      res.status(201);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).end();
   }
 });
 
 app.get("/highscore", async (req, res) => {
-  await mongoose.connect(URI);
-  const result = await Result.find();
+  try {
+    const result = await pool.query("SELECT * FROM score");
 
-  res.render("highscore", {
-    results: result.map((a) => {
-      return {
-        name: a.name,
-        time: a.time,
-        count: a.count,
-        letter: a.letter,
-        repeat: a.repeat,
-      };
-    }),
-  });
+    const highscore = result.rows;
+
+    res.render("highscore", {
+      results: highscore.map((a) => {
+        return {
+          name: a.name,
+          time: a.time,
+          count: a.count,
+          letter: a.letter,
+          repeat: a.repeat,
+        };
+      }),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).end();
+  }
 });
 
 app.get("/game/highscore/number/:num", async (req, res) => {
-  await mongoose.connect(URI);
-  const number = req.params.num;
-  const highscore = await Result.find({ letter: number });
+  try {
+    const result = await pool.query(
+      `SELECT * FROM score WHERE letter = ${req.params.num}`
+    );
 
-  res.json({
-    results: highscore.map((a) => {
-      return {
-        name: a.name,
-        time: a.time,
-        count: a.count,
-        letter: a.letter,
-        repeat: a.repeat,
-      };
-    }),
-  });
+    const scoreNum = result.rows;
+
+    res.json({
+      results: scoreNum.map((a) => {
+        return {
+          name: a.name,
+          time: a.time,
+          count: a.count,
+          letter: a.letter,
+          repeat: a.repeat,
+        };
+      }),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).end();
+  }
 });
 
 app.get("/game/highscore/repeat/:rep", async (req, res) => {
-  await mongoose.connect(URI);
-  const repeat = req.params.rep;
-  const score = await Result.find({ repeat: repeat });
+  try {
+    const result = await pool.query(
+      `SELECT * FROM score WHERE repeat = '${req.params.rep}'`
+    );
 
-  res.json({
-    results: score.map((b) => {
-      return {
-        name: b.name,
-        time: b.time,
-        count: b.count,
-        letter: b.letter,
-        repeat: b.repeat,
-      };
-    }),
-  });
+    const scoreRep = result.rows;
+
+    res.json({
+      results: scoreRep.map((a) => {
+        return {
+          name: a.name,
+          time: a.time,
+          count: a.count,
+          letter: a.letter,
+          repeat: a.repeat,
+        };
+      }),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).end();
+  }
 });
 
 app.use("/static", express.static("static"));

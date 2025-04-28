@@ -13,15 +13,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const express_handlebars_1 = require("express-handlebars");
 const secretword_1 = require("./secretword");
 const checkGuess_1 = __importDefault(require("./checkGuess"));
 const time_1 = __importDefault(require("./time"));
 const count_1 = __importDefault(require("./count"));
-const model_1 = require("./model");
 const uuid_1 = require("uuid");
+const pg_1 = require("pg");
 const app = (0, express_1.default)();
+const pool = new pg_1.Pool({
+    user: "postgres",
+    password: "password",
+});
+function CreateTable() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield pool.query(`CREATE TABLE IF NOT EXISTS score(
+      id SERIAL PRIMARY KEY, 
+      playerID TEXT NOT NULL, 
+      name TEXT NOT NULL, 
+      startTime BIGINT NOT NULL, 
+      stopTime BIGINT NOT NULL, 
+      time INT NOT NULL, 
+      count INT NOT NULL, 
+      gusses TEXT[] NOT NULL, 
+      letter INT NOT NULL, 
+      repeat TEXT NOT NULL)`);
+        }
+        catch (err) {
+            console.log("No database");
+        }
+    });
+}
+CreateTable();
 app.engine("handlebars", (0, express_handlebars_1.engine)());
 app.set("view engine", "handlebars");
 app.set("views", "./views");
@@ -79,76 +103,83 @@ app.post("/game/guess/:guess/:id", (req, res) => {
         res.status(404).end();
     }
 });
-const URI = process.env.MONGO_URI;
-//"mongodb://localhost:27017/highscore"
 app.post("/game/highscore/:playerID", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect(URI);
-    const playerID = req.params.playerID;
-    if (playerID === ID) {
-        const newResult = new model_1.Result({
-            playerID: playerID,
-            name: req.body.name,
-            startTime: time,
-            stopTime: stopTime,
-            time: timeResult,
-            count: count,
-            gusses: wordGuessed,
-            letter: num,
-            repeat: rep,
-        });
-        yield newResult.save();
-        res.status(201);
+    try {
+        const playerID = req.params.playerID;
+        if (playerID === ID) {
+            const sql = `INSERT INTO score(playerID, name, startTime, stopTime, time, count, gusses, letter, repeat) VALUES('${playerID}', $1::text,${time},${stopTime},${timeResult},${count},$2::text[],${num}, '${rep}')`;
+            const values = [req.body.name, wordGuessed];
+            const result = yield pool.query(sql, values);
+            res.status(201);
+        }
     }
-    else {
-        res.status(404).end();
+    catch (err) {
+        console.log(err);
+        res.status(500).end();
     }
 }));
 app.get("/highscore", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect(URI);
-    const result = yield model_1.Result.find();
-    res.render("highscore", {
-        results: result.map((a) => {
-            return {
-                name: a.name,
-                time: a.time,
-                count: a.count,
-                letter: a.letter,
-                repeat: a.repeat,
-            };
-        }),
-    });
+    try {
+        const result = yield pool.query("SELECT * FROM score");
+        const highscore = result.rows;
+        res.render("highscore", {
+            results: highscore.map((a) => {
+                return {
+                    name: a.name,
+                    time: a.time,
+                    count: a.count,
+                    letter: a.letter,
+                    repeat: a.repeat,
+                };
+            }),
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).end();
+    }
 }));
 app.get("/game/highscore/number/:num", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect(URI);
-    const number = req.params.num;
-    const highscore = yield model_1.Result.find({ letter: number });
-    res.json({
-        results: highscore.map((a) => {
-            return {
-                name: a.name,
-                time: a.time,
-                count: a.count,
-                letter: a.letter,
-                repeat: a.repeat,
-            };
-        }),
-    });
+    try {
+        const result = yield pool.query(`SELECT * FROM score WHERE letter = ${req.params.num}`);
+        const scoreNum = result.rows;
+        res.json({
+            results: scoreNum.map((a) => {
+                return {
+                    name: a.name,
+                    time: a.time,
+                    count: a.count,
+                    letter: a.letter,
+                    repeat: a.repeat,
+                };
+            }),
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).end();
+    }
 }));
 app.get("/game/highscore/repeat/:rep", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield mongoose_1.default.connect(URI);
-    const repeat = req.params.rep;
-    const score = yield model_1.Result.find({ repeat: repeat });
-    res.json({
-        results: score.map((b) => {
-            return {
-                name: b.name,
-                time: b.time,
-                count: b.count,
-                letter: b.letter,
-                repeat: b.repeat,
-            };
-        }),
-    });
+    try {
+        const result = yield pool.query(`SELECT * FROM score WHERE repeat = '${req.params.rep}'`);
+        const scoreRep = result.rows;
+        res.json({
+            results: scoreRep.map((a) => {
+                return {
+                    name: a.name,
+                    time: a.time,
+                    count: a.count,
+                    letter: a.letter,
+                    repeat: a.repeat,
+                };
+            }),
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).end();
+    }
 }));
 app.use("/static", express_1.default.static("static"));
 app.use("/file", express_1.default.static("../frontend/dist"));
